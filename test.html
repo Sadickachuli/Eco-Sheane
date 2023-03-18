@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Shea Butter Sales</title>
+
+	<!-- css file link  -->
+    <link rel="stylesheet" href="css/styles.css">
+
+
+	<script src="https://apis.google.com/js/api.js"></script>
+</head>
+<body>
+	<header>
+		<nav>
+			<ul>
+				<li><a href="#">Home</a></li>
+				<li><a href="#">About</a></li>
+				<li><a href="#">Products</a></li>
+				<li><a href="#">Contact</a></li>
+			</ul>
+		</nav>
+	</header>
+	<main>
+		<h1>Shea Butter Sales Tracker</h1>
+		<table id="salesTable">
+			<tr>
+				<th>Date</th>
+				<th>Customer</th>
+				<th>Shea Butter Sold (kg)</th>
+				<th>Carbon Emissions Reduced (kg)</th>
+			</tr>
+		</table>
+	</main>
+	<footer>
+		<p>&copy; 2023 Shea Butter Sales. All rights reserved.</p>
+	</footer>
+
+	<script>
+		gapi.load('client', function() {
+			gapi.client.init({
+				apiKey: 'YOUR_API_KEY',
+				discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+				clientId: 'YOUR_CLIENT_ID',
+				scope: 'https://www.googleapis.com/auth/spreadsheets.readonly'
+			}).then(function() {
+				return gapi.client.sheets.spreadsheets.values.get({
+					spreadsheetId: 'YOUR_SPREADSHEET_ID',
+					range: 'Sheet1!A2:D'
+				});
+			}).then(function(response) {
+				var salesTable = document.getElementById('salesTable');
+				var salesData = response.result.values;
+
+				for (var i = 0; i < salesData.length; i++) {
+					var newRow = salesTable.insertRow();
+					var dateCell = newRow.insertCell(0);
+					var customerCell = newRow.insertCell(1);
+					var sheaButterCell = newRow.insertCell(2);
+					var carbonEmissionsCell = newRow.insertCell(3);
+					dateCell.innerHTML = salesData[i][0];
+					customerCell.innerHTML = salesData[i][1];
+					sheaButterCell.innerHTML = salesData[i][2];
+					carbonEmissionsCell.innerHTML = salesData[i][3];
+				}
+			}, function(reason) {
+				console.log('Error: ' + reason.result.error.message);
+			});
+		});
+	</script>
+</body>
+</html>
